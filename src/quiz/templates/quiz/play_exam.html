@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Jugar Examen: {{ exam.title }}{% endblock %}
+
+{% block content %}
+<h1>{{ exam.title }}</h1>
+<p>{{ exam.description }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    {% for question in questions %}
+        <div class="mb-3">
+            <h3>{{ forloop.counter }}. {{ question.text }}</h3>
+            {% for choice in question.choices.all %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice{{ choice.id }}">
+                    <label class="form-check-label" for="choice{{ choice.id }}">
+                        {{ choice.text }}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Enviar Respuestas</button>
+</form>
+{% endblock %}

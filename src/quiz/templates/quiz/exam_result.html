@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Resultado Examen{% endblock %}
+
+{% block content %}
+<h1>Resultado del Examen: {{ exam.title }}</h1>
+<p>Has respondido correctamente {{ score }} de {{ total }} preguntas.</p>
+
+<a href="{% url 'exam_list' %}" class="btn btn-secondary">Volver a la lista</a>
+{% endblock %}

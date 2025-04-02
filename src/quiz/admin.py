@@ -1,4 +1,7 @@
 from django.contrib import admin
+
+# Register your models here.
+
 from .models import Exam, Question, Choice
 
 class ChoiceInline(admin.TabularInline):
@@ -18,6 +21,3 @@ class ExamAdmin(admin.ModelAdmin):
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('text', 'exam')
     inlines = [ChoiceInline]
-
-
-# Register your models here.
