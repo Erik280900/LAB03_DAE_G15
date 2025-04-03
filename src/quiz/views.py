@@ -61,9 +61,9 @@ def question_create(request, exam_id):
         'formset': formset,
     })
 
-# ------------------------------
+# ------------------------------ 
 # NUEVAS FUNCIONALIDADES: EDITAR Y ELIMINAR PREGUNTAS
-# ------------------------------
+# ------------------------------ 
 
 def question_edit(request, question_id):
     question = get_object_or_404(Question, id=question_id)
@@ -98,3 +98,37 @@ def question_delete(request, question_id):
         return redirect('exam_detail', exam_id=exam_id)
     
     return render(request, 'quiz/question_confirm_delete.html', {'question': question})
+
+# ------------------------------
+# FUNCIONALIDAD PARA JUGAR EL EXAMEN
+# ------------------------------
+
+def exam_play(request, exam_id):
+    exam = get_object_or_404(Exam, id=exam_id)
+    questions = exam.questions.all().prefetch_related('choices')
+    
+    # Preparamos los datos para las preguntas con sus respuestas
+    question_data = []
+    
+    if request.method == "POST":
+        for question in questions:
+            question_info = {
+                'question': question,
+                'has_response': False
+            }
+            
+            selected_choice_id = request.POST.get(f"question_{question.id}")
+            if selected_choice_id:
+                selected_choice = get_object_or_404(Choice, id=selected_choice_id)
+                question_info['has_response'] = True
+                question_info['selected_choice'] = selected_choice
+                question_info['is_correct'] = selected_choice.is_correct
+            
+            question_data.append(question_info)
+        
+        return render(request, 'quiz/exam_play.html', {
+            'exam': exam,
+            'question_data': question_data
+        })
+    
+    return render(request, 'quiz/exam_play.html', {'exam': exam, 'questions': questions})
